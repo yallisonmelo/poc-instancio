@@ -45,7 +45,19 @@ class StudentServiceTest {
         var result = studentService.verifyStatusByAge(student);
 
         Assertions.assertEquals(Boolean.TRUE,result);
-
-
     }
+
+    @Test
+    void testVerifyStatusByAgeUsingGenerate(){
+        var student = Instancio.of(Student.class)
+                //aleatory localdate
+                .generate(field(Student::getBirthday), gen -> gen.temporal().localDate().past())
+                .onComplete(all(Student.class), (Student s) ->
+                        s.setStatus(s.getAge() < 18 ? "NEW" : "OLD")).create();
+
+        var result = studentService.verifyStatusByAge(student);
+
+        Assertions.assertEquals(Boolean.TRUE,result);
+    }
+
 }
